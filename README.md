@@ -20,13 +20,15 @@ Open <http://localhost:8080> and follow these steps:
 
 > Use `localhost`, not `127.0.0.1`. WebAuthn needs the origin to match the relying party ID. It also only works
 > on `localhost` or over HTTPS.
+>
+> You need a browser that supports the WebAuthn JSON helpers: Chrome or Edge 129+, Firefox 119+, or Safari 18.4+.
 
 ## How it works
 
 | Piece | What it does |
 |---|---|
 | `SecurityConfig` | Calls `http.webAuthn()` with the relying party ID, name and allowed origins, then applies `VaadinSecurityConfigurer`. |
-| `src/main/frontend/webauthn.js` | Runs the browser side of the WebAuthn ceremonies (`navigator.credentials.create/get`) against Spring Security's endpoints. It is exposed as `window.passkeys`. |
+| `src/main/frontend/webauthn.js` | Runs the browser side of the WebAuthn ceremonies (`navigator.credentials.create/get`) against Spring Security's endpoints. It uses the WebAuthn JSON helpers (`PublicKeyCredential.parse*OptionsFromJSON`, `credential.toJSON()`) and is exposed as `window.passkeys`. |
 | `LoginView` | Shows Vaadin's `LoginForm` and a **Sign in with a passkey** button that calls `passkeys.authenticate()` with `executeJs`. |
 | `PasskeysView` | Registers, lists and deletes the signed-in user's passkeys. |
 | `PasskeyService` | Reads and deletes credentials through `UserCredentialRepository` and `PublicKeyCredentialUserEntityRepository`. |
